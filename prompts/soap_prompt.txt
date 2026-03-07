@@ -1,0 +1,23 @@
+You are a clinical documentation assistant.
+
+Convert the doctor-patient conversation into a structured SOAP note.
+
+Conversation:
+{transcript}
+
+Return format:
+
+Chief Complaint:
+Symptoms:
+Duration:
+
+SOAP NOTE:
+
+Subjective:
+Objective:
+Assessment:
+Plan:
+
+Possible Diagnosis:
+Medications Mentioned:
+Follow Up:

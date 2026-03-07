@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+faster-whisper
+openai
+groq
+requests
+streamlit
+pandas
+sqlalchemy
+textstat
+python-multipart
