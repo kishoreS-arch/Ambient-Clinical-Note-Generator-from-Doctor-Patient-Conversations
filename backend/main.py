@@ -1,83 +1,104 @@
-from fastapi import FastAPI, UploadFile, File
-from pydantic import BaseModel
 import os
 import shutil
 import json
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import uvicorn
 
 from whisper_service import transcribe_audio
-from llm_service import generate_soap
+from llm_service import generate_soap, generate_patient_summary, generate_prescription, generate_followup_reminder
 from icd_mapper import map_to_icd11
-from prescription import extract_prescription, generate_patient_summary
-from drug_checker import check_drug
-from analytics import save_consultation, get_analytics
+from drug_checker import check_drug_interactions
+from db_service import save_consultation, get_all_consultations, approve_consultation
+from analytics import generate_analytics
 
-app = FastAPI()
+app = FastAPI(title="ClinNote AI Backend")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 os.makedirs("temp", exist_ok=True)
-
-class ExtractionRequest(BaseModel):
-    transcript: str
 
 @app.post("/process_audio")
 async def process_audio(file: UploadFile = File(...)):
     path = f"temp/{file.filename}"
-
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    # 1. Transcribe audio
-    transcript = transcribe_audio(path)
-
-    # 2. Generate SOAP Note
-    soap = generate_soap(transcript)
-
-    # 3. Patient Summary
-    summary = generate_patient_summary(transcript)
-    
-    # 4. Prescription
-    prescription_json = extract_prescription(transcript)
     try:
-        prescriptions = json.loads(prescription_json)
-        # Handle case where groq returned an object with a single list instead of list directly
-        if isinstance(prescriptions, dict) and len(prescriptions.keys()) == 1:
-            prescriptions = list(prescriptions.values())[0]
-    except Exception:
-        prescriptions = []
+        with open(path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
-    # 5. Extract a possible diagnosis from SOAP for ICD mapping (basic heuristic or LLM based)
-    # To keep the demo fast, we'll map the whole transcript or ask the LLM
-    # In a full app, we'd parse the Assessment section of SOAP
-    icd_mapping = map_to_icd11(transcript)
-    
-    # 6. Drug Warnings
-    drug_warnings = []
-    drugs_found = []
-    if isinstance(prescriptions, list):
-        for rx in prescriptions:
-            if isinstance(rx, dict) and "drug_name" in rx:
-                drug = rx["drug_name"]
-                drugs_found.append(drug)
-                warning = check_drug(drug)
-                drug_warnings.append({"drug": drug, "warning": warning})
+        # 1. Transcribe audio with graceful fallback
+        transcript = transcribe_audio(path)
 
-    # Save to DB for analytics
-    # we take the first drug or N/A
-    primary_drug = drugs_found[0] if drugs_found else "N/A"
-    save_consultation(transcript, soap, icd_mapping.split("-")[0].strip() if "-" in icd_mapping else icd_mapping, primary_drug)
+        # 2. Extract SOAP JSON
+        soap_data = generate_soap(transcript)
 
-    # Safely remove temp file
-    if os.path.exists(path):
-        os.remove(path)
+        # 3. Patient Summary
+        summary_data = generate_patient_summary(transcript)
 
-    return {
-        "transcript": transcript,
-        "soap_note": soap,
-        "summary": summary,
-        "icd_mapping": icd_mapping,
-        "prescriptions": prescriptions,
-        "drug_warnings": drug_warnings
-    }
+        # 4. Prescription
+        prescription_data = generate_prescription(transcript)
+        rx_list = prescription_data.get("medications", [])
+
+        # 5. Extract drugs for interaction check
+        drug_names = [r.get("drug_name") for r in rx_list if isinstance(r, dict) and "drug_name" in r]
+
+        # 6. Drug Warning Check (OpenFDA + Critical Pairs)
+        interaction_check = check_drug_interactions(drug_names)
+
+        # 7. ICD-11 Mapping
+        diagnosis = soap_data.get("diagnosis", "Unknown Diagnosis")
+        icd_mapping = map_to_icd11(diagnosis)
+
+        # 8. Follow-up reminder
+        reminder = generate_followup_reminder(transcript)
+
+        # Save to SQLite DB
+        icd_primary = icd_mapping.get("primary", {}).get("code", "Unknown")
+        drug_count = len(drug_names)
+        
+        # Serialize soap dict for storage
+        soap_str = json.dumps(soap_data)
+        consult_id = save_consultation(transcript, soap_str, diagnosis, icd_primary, drug_count)
+
+        response_data = {
+            "id": consult_id,
+            "transcript": transcript,
+            "soap": soap_data,
+            "summary": summary_data,
+            "icd": icd_mapping,
+            "prescription": rx_list,
+            "drug_check": interaction_check,
+            "reminder": reminder
+        }
+
+        return response_data
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if os.path.exists(path):
+            os.remove(path)
+
+@app.post("/approve_consultation/{consult_id}")
+def approve_consult_endpoint(consult_id: int):
+    success = approve_consultation(consult_id)
+    if success:
+        return {"message": "Approved", "id": consult_id}
+    raise HTTPException(status_code=404, detail="Consultation not found or approve failed")
 
 @app.get("/analytics")
-def analytics_dashboard():
-    return get_analytics()
+def analytics_endpoint():
+    return generate_analytics()
+
+@app.get("/consultations")
+def consultations_endpoint():
+    return get_all_consultations()
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
