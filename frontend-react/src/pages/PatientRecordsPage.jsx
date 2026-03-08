@@ -77,7 +77,7 @@ export default function PatientRecordsPage({ setActiveTab }) {
                     const Icon = s.icon;
                     return (
                         <div key={i} style={{
-                            background: '#161b22', borderRadius: '14px', padding: '18px 20px',
+                            background: 'var(--bg-secondary)', borderRadius: '14px', padding: '18px 20px',
                             border: '1px solid rgba(255,255,255,0.06)',
                             display: 'flex', alignItems: 'center', gap: '14px',
                         }}>
@@ -108,7 +108,7 @@ export default function PatientRecordsPage({ setActiveTab }) {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     style={{
                         width: '100%', padding: '14px 16px 14px 48px', borderRadius: '12px',
-                        background: '#161b22', border: '1px solid rgba(255,255,255,0.08)',
+                        background: 'var(--bg-secondary)', border: '1px solid rgba(255,255,255,0.08)',
                         color: '#fff', fontSize: '14px', outline: 'none', boxSizing: 'border-box',
                         transition: 'border-color 0.2s',
                     }}
@@ -118,8 +118,8 @@ export default function PatientRecordsPage({ setActiveTab }) {
             </div>
 
             {/* Patient Table */}
-            <div style={{
-                background: '#161b22', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
+            <div className="med-card" style={{
+                background: 'var(--bg-secondary)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
                 overflow: 'hidden',
             }}>
                 {/* Header Row */}

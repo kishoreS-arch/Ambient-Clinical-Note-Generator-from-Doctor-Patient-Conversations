@@ -16,7 +16,7 @@ export default function MessagesPage() {
                 <p style={{ color: 'var(--text-muted)' }}>Direct channel to your clinical team.</p>
             </div>
 
-            <div style={{
+            <div className="med-card" style={{
                 flex: 1, background: 'var(--bg-secondary)', borderRadius: '20px',
                 border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column',
                 overflow: 'hidden'

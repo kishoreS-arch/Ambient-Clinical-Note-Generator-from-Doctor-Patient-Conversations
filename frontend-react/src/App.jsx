@@ -18,6 +18,7 @@ import ConsultationHistoryPage from './pages/ConsultationHistoryPage';
 import ReportsPage from './pages/ReportsPage';
 import MessagesPage from './pages/MessagesPage';
 import ProfilePage from './pages/ProfilePage';
+import './medical-theme.css';
 
 export default function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,7 +34,6 @@ export default function App() {
     }
 
     const renderPage = () => {
-        // Patient restriction check
         if (userRole === 'patient') {
             switch (activeTab) {
                 case 'dashboard': return <DashboardPage setActiveTab={setActiveTab} userRole={userRole} />;
@@ -80,13 +80,15 @@ export default function App() {
                     userRole={userRole}
                     onLogout={() => { setIsAuthenticated(false); setUserRole('doctor'); setActiveTab('dashboard'); }}
                 />
-                <main style={{
+                <main className="med-grid-bg" style={{
                     flex: 1,
                     overflowY: 'auto',
                     padding: '32px 40px',
                     background: 'linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%)',
                 }}>
-                    {renderPage()}
+                    <div key={activeTab} className="page-enter">
+                        {renderPage()}
+                    </div>
                 </main>
             </div>
         </ConsultationProvider>

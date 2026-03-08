@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
+import { translations } from '../i18n/translations';
 
 const ConsultationContext = createContext(null);
 
@@ -28,27 +29,33 @@ export function ConsultationProvider({ children }) {
         };
     });
 
+    const [aiInsights, setAiInsights] = useState({
+        missedSymptoms: [],
+        emotionAnalysis: { stress: 'Low', pain: 12, anxiety: 'None' },
+        riskPrediction: [],
+        suggestedQuestions: [],
+        burnoutStats: { consultationsToday: 12, cumulativeStress: 'Low' },
+        timeline: []
+    });
+
     useEffect(() => {
         localStorage.setItem('clin-note-settings', JSON.stringify(settings));
 
-        // Apply theme
+        // Apply theme via class toggle
         const root = document.documentElement;
         if (settings.darkMode) {
-            root.style.setProperty('--bg-primary', '#0d1117');
-            root.style.setProperty('--bg-secondary', '#161b22');
-            root.style.setProperty('--text-primary', '#e6edf3');
-            root.style.setProperty('--text-muted', 'rgba(255,255,255,0.4)');
-            root.style.setProperty('--border-color', 'rgba(255,255,255,0.06)');
-            document.body.style.backgroundColor = '#0d1117';
+            root.classList.remove('light-mode');
         } else {
-            root.style.setProperty('--bg-primary', '#f8fafc');
-            root.style.setProperty('--bg-secondary', '#ffffff');
-            root.style.setProperty('--text-primary', '#0f172a');
-            root.style.setProperty('--text-muted', '#64748b');
-            root.style.setProperty('--border-color', '#e2e8f0');
-            document.body.style.backgroundColor = '#f8fafc';
+            root.classList.add('light-mode');
         }
-    }, [settings]);
+    }, [settings.darkMode]);
+
+    // t helper for translations
+    const t = (key) => {
+        const lang = settings.language || 'English';
+        const set = translations[lang] || translations['English'];
+        return set[key] || key;
+    };
 
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
@@ -169,6 +176,71 @@ export function ConsultationProvider({ children }) {
         }
     };
 
+    const startDemoConsultation = () => {
+        setIsProcessing(true);
+        setProcessStep(0);
+        setIsApproved(false);
+        setResultsAvailable(false);
+
+        // Simulation of voice/audio playing could go here
+        const synth = window.speechSynthesis;
+        const msg = new SpeechSynthesisUtterance("Patient complains of persistent cough and mild fever for three days. No shortness of breath. Heart sounds are normal. Prescription: Paracetamol and rest.");
+        msg.rate = 0.9;
+        synth.speak(msg);
+
+        const interval = setInterval(() => {
+            setProcessStep(prev => {
+                if (prev >= 6) {
+                    clearInterval(interval);
+                    return prev;
+                }
+                return prev + 1;
+            });
+        }, 1200);
+
+        const timelineData = [
+            { date: 'Jan 10', event: 'Fever' },
+            { date: 'Jan 12', event: 'Cough' },
+            { date: 'Jan 14', event: 'Breathing difficulty' }
+        ];
+
+        setTimeout(() => {
+            const demoData = {
+                id: "DEMO-" + Date.now(),
+                transcript: "Patient: I've had this cough for 3 days and a bit of fever. I also felt some dizziness earlier today.\nDoctor: Any chest pain?\nPatient: No, just tired and lightheaded.",
+                soap_notes: {
+                    Subjective: "3-day history of cough and fever.",
+                    Objective: "Temperature 101F. Normal heart sounds.",
+                    Assessment: "Mild viral infection.",
+                    Plan: "Rest, hydration, and Paracetamol."
+                },
+                icd_codes: [{ code: "J06.9", description: "Acute upper respiratory infection" }],
+                prescription: [{ drug: "Paracetamol", dosage: "500mg", instructions: "Twice daily" }],
+                summary: "Patient presents with mild respiratory symptoms. Diagnosed with viral infection. Prescribed rest and paracetamol."
+            };
+
+            setConsultData(demoData);
+            setAiInsights({
+                missedSymptoms: ["Dizziness", "Lightheadedness"],
+                emotionAnalysis: { stress: 'Medium', pain: 45, anxiety: 'Moderate' },
+                riskPrediction: [
+                    { disease: "Flu", risk: 'High' },
+                    { disease: "Pneumonia", risk: 'Medium' },
+                    { disease: "COVID-like", risk: 'Low' }
+                ],
+                suggestedQuestions: [
+                    "When did the pain start?",
+                    "Does pain increase while breathing?",
+                    "Does the pain spread to the arm?"
+                ],
+                burnoutStats: { consultationsToday: 28, cumulativeStress: 'High' },
+                timeline: timelineData
+            });
+            setIsProcessing(false);
+            setResultsAvailable(true);
+        }, 8500);
+    };
+
     const handleApprove = async () => {
         if (!consultData) return;
         try {
@@ -197,8 +269,8 @@ export function ConsultationProvider({ children }) {
     const value = {
         isRecording, liveTranscript, consultData, isProcessing, processStep,
         resultsAvailable, isApproved, analyticsData, historyData, steps,
-        reminders, settings, setSettings,
-        startRecording, stopRecording, handleApprove,
+        reminders, settings, setSettings, t, aiInsights, setAiInsights,
+        startRecording, stopRecording, handleApprove, startDemoConsultation,
         setConsultData, setLiveTranscript, setResultsAvailable,
         fetchAnalytics, fetchHistory,
         addReminder, toggleReminderStatus, deleteReminder,

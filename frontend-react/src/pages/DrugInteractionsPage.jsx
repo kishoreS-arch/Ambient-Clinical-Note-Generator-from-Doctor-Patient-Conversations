@@ -60,8 +60,8 @@ export default function DrugInteractionsPage() {
       </div>
 
       {/* Input Section */}
-      <div style={{
-        background: '#161b22', borderRadius: '20px',
+      <div className="med-card" style={{
+        background: 'var(--bg-secondary)', borderRadius: '20px',
         border: '1px solid rgba(255,255,255,0.06)', padding: '28px', marginBottom: '24px',
       }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '16px', alignItems: 'end' }}>
@@ -135,7 +135,7 @@ export default function DrugInteractionsPage() {
 
       {/* Result */}
       {result && (
-        <div style={{
+        <div className="med-card" style={{
           borderRadius: '20px', overflow: 'hidden',
           border: `1px solid ${severityConfig[result.severity].border}`,
         }}>
@@ -157,7 +157,7 @@ export default function DrugInteractionsPage() {
               </p>
             </div>
           </div>
-          <div style={{ padding: '24px', background: '#161b22' }}>
+          <div className="med-card" style={{ padding: '24px', background: 'var(--bg-secondary)' }}>
             <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '15px', lineHeight: '1.7', margin: '0 0 16px 0' }}>
               {result.detail}
             </p>
@@ -177,9 +177,9 @@ export default function DrugInteractionsPage() {
       )}
 
       {/* Severity Legend */}
-      <div style={{
+      <div className="med-card" style={{
         marginTop: '24px', padding: '20px 24px', borderRadius: '16px',
-        background: '#161b22', border: '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--bg-secondary)', border: '1px solid rgba(255,255,255,0.06)',
       }}>
         <h4 style={{ fontSize: '13px', fontWeight: '700', color: 'rgba(255,255,255,0.4)', margin: '0 0 14px 0', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
           Severity Guide

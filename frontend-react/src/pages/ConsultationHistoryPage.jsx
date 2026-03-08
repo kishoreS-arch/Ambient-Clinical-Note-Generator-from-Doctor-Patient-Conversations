@@ -12,7 +12,7 @@ export default function ConsultationHistoryPage() {
 
             <div style={{ display: 'grid', gap: '16px' }}>
                 {historyData.length > 0 ? historyData.map((visit) => (
-                    <div key={visit.id} style={{
+                    <div key={visit.id} className="med-card" style={{
                         background: 'var(--bg-secondary)',
                         padding: '24px',
                         borderRadius: '16px',
@@ -22,8 +22,8 @@ export default function ConsultationHistoryPage() {
                         justifyContent: 'space-between',
                         transition: 'transform 0.2s',
                         cursor: 'pointer'
-                    }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                    }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                             <div style={{
                                 width: '50px', height: '50px', borderRadius: '12px',

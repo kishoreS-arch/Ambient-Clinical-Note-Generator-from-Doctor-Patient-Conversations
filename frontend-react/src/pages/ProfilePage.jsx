@@ -6,7 +6,7 @@ export default function ProfilePage() {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '32px' }}>Personal Profile</h2>
 
-            <div style={{ background: 'var(--bg-secondary)', borderRadius: '24px', padding: '40px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+            <div className="med-card" style={{ background: 'var(--bg-secondary)', borderRadius: '24px', padding: '40px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
                 <div style={{ width: '100px', height: '100px', borderRadius: '30px', background: 'linear-gradient(135deg, #0d9488, #06b6d4)', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', color: '#fff' }}>
                     P
                 </div>

@@ -80,8 +80,8 @@ export default function TranscriptPage() {
             </div>
 
             {!rawTranscript ? (
-                <div style={{
-                    background: '#161b22', borderRadius: '20px', padding: '60px',
+                <div className="med-card" style={{
+                    background: 'var(--bg-secondary)', borderRadius: '20px', padding: '60px',
                     border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center',
                 }}>
                     <FileText size={48} color="rgba(255,255,255,0.15)" style={{ marginBottom: '16px' }} />
@@ -93,8 +93,8 @@ export default function TranscriptPage() {
                     </p>
                 </div>
             ) : isEditing ? (
-                <div style={{
-                    background: '#161b22', borderRadius: '20px', padding: '24px',
+                <div className="med-card" style={{
+                    background: 'var(--bg-secondary)', borderRadius: '20px', padding: '24px',
                     border: '1px solid rgba(255,255,255,0.06)',
                 }}>
                     <textarea
@@ -129,8 +129,8 @@ export default function TranscriptPage() {
                     </div>
                 </div>
             ) : (
-                <div style={{
-                    background: '#161b22', borderRadius: '20px', padding: '24px',
+                <div className="med-card" style={{
+                    background: 'var(--bg-secondary)', borderRadius: '20px', padding: '24px',
                     border: '1px solid rgba(255,255,255,0.06)',
                 }}>
                     {/* Speaker Legend */}

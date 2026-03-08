@@ -80,7 +80,7 @@ export default function SoapNotesPage() {
 
             {!soap ? (
                 <div style={{
-                    background: '#161b22', borderRadius: '20px', padding: '60px',
+                    background: 'var(--bg-secondary)', borderRadius: '20px', padding: '60px',
                     border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center',
                 }}>
                     <ClipboardList size={48} color="rgba(255,255,255,0.15)" style={{ marginBottom: '16px' }} />
@@ -101,7 +101,7 @@ export default function SoapNotesPage() {
 
                         return (
                             <div key={section.key} style={{
-                                background: '#161b22', borderRadius: '16px',
+                                background: 'var(--bg-secondary)', borderRadius: '16px',
                                 border: `1px solid ${section.color}20`,
                                 overflow: 'hidden',
                             }}>
@@ -164,7 +164,7 @@ export default function SoapNotesPage() {
                     {/* ICD-11 Codes */}
                     {icd && (
                         <div style={{
-                            background: '#161b22', borderRadius: '16px',
+                            background: 'var(--bg-secondary)', borderRadius: '16px',
                             border: '1px solid rgba(13,148,136,0.15)', padding: '20px',
                         }}>
                             <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#0d9488', margin: '0 0 16px 0', letterSpacing: '0.5px' }}>

@@ -92,7 +92,7 @@ export default function PatientSummaryPage() {
             <div style={{ display: 'grid', gap: '20px' }}>
                 {/* Clinical Note */}
                 <div style={{
-                    background: '#161b22', borderRadius: '16px', padding: '28px',
+                    background: 'var(--bg-secondary)', borderRadius: '16px', padding: '28px',
                     border: '1px solid rgba(255,255,255,0.06)',
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>

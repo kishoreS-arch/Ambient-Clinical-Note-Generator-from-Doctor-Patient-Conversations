@@ -66,8 +66,8 @@ export default function RemindersPage() {
                 ].map((s, i) => {
                     const Icon = s.icon;
                     return (
-                        <div key={i} style={{
-                            background: '#161b22', borderRadius: '14px', padding: '18px 20px',
+                        <div key={i} className="med-card" style={{
+                            background: 'var(--bg-secondary)', borderRadius: '14px', padding: '18px 20px',
                             border: '1px solid rgba(255,255,255,0.06)',
                             display: 'flex', alignItems: 'center', gap: '14px',
                         }}>
@@ -84,7 +84,7 @@ export default function RemindersPage() {
             </div>
 
             {/* Filter Tabs */}
-            <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', background: '#161b22', padding: '4px', borderRadius: '10px', width: 'fit-content', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', background: 'var(--bg-secondary)', padding: '4px', borderRadius: '10px', width: 'fit-content', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {['all', 'pending', 'completed'].map(f => (
                     <button key={f} onClick={() => setFilter(f)} style={{
                         padding: '8px 18px', borderRadius: '8px', border: 'none', cursor: 'pointer',
@@ -97,8 +97,8 @@ export default function RemindersPage() {
 
             {/* Add Form Modal */}
             {showAddForm && (
-                <div style={{
-                    background: '#161b22', borderRadius: '16px', padding: '24px', marginBottom: '20px',
+                <div className="med-card" style={{
+                    background: 'var(--bg-secondary)', borderRadius: '16px', padding: '24px', marginBottom: '20px',
                     border: '1px solid rgba(13,148,136,0.3)',
                     boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
                 }}>
@@ -140,8 +140,8 @@ export default function RemindersPage() {
                     const due = getDaysUntil(reminder.dueDate);
                     const isDone = reminder.status === 'completed';
                     return (
-                        <div key={reminder.id} style={{
-                            background: '#161b22', borderRadius: '14px', padding: '18px 20px',
+                        <div key={reminder.id} className="med-card" style={{
+                            background: 'var(--bg-secondary)', borderRadius: '14px', padding: '18px 20px',
                             border: `1px solid ${isDone ? 'rgba(34,197,94,0.15)' : due.urgent ? `${due.color}25` : 'rgba(255,255,255,0.06)'}`,
                             display: 'flex', alignItems: 'center', gap: '16px',
                             opacity: isDone ? 0.6 : 1,
@@ -198,9 +198,9 @@ export default function RemindersPage() {
                 })}
 
                 {filtered.length === 0 && (
-                    <div style={{
+                    <div className="med-card" style={{
                         padding: '48px', textAlign: 'center', color: 'rgba(255,255,255,0.3)',
-                        background: '#161b22', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
+                        background: 'var(--bg-secondary)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
                     }}>
                         <Bell size={32} style={{ marginBottom: '12px', opacity: 0.3 }} />
                         <p style={{ fontSize: '14px', margin: 0 }}>No {filter !== 'all' ? filter : ''} reminders yet</p>

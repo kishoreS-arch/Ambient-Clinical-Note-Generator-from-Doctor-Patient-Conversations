@@ -73,7 +73,7 @@ export default function AnalyticsPage() {
                     const Icon = s.icon;
                     return (
                         <div key={i} style={{
-                            background: '#161b22', borderRadius: '16px', padding: '22px',
+                            background: 'var(--bg-secondary)', borderRadius: '16px', padding: '22px',
                             border: '1px solid rgba(255,255,255,0.06)',
                             display: 'flex', alignItems: 'center', gap: '16px',
                         }}>
@@ -92,7 +92,7 @@ export default function AnalyticsPage() {
             {/* Charts Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                 {/* Weekly Consultations Bar Chart */}
-                <div style={{ background: '#161b22', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="med-card" style={{ background: 'var(--bg-secondary)', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#fff', margin: '0 0 24px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Calendar size={16} color="#0d9488" /> Weekly Consultations
                     </h3>
@@ -115,7 +115,7 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Top Diseases */}
-                <div style={{ background: '#161b22', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="med-card" style={{ background: 'var(--bg-secondary)', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#fff', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Activity size={16} color="#3b82f6" /> Top Diseases
                     </h3>
@@ -142,7 +142,7 @@ export default function AnalyticsPage() {
             {/* Medicine Usage + Approval Rate */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 {/* Medicine Usage */}
-                <div style={{ background: '#161b22', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="med-card" style={{ background: 'var(--bg-secondary)', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#fff', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Pill size={16} color="#a855f7" /> Medicine Usage
                     </h3>
@@ -171,7 +171,7 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Performance Summary */}
-                <div style={{ background: '#161b22', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="med-card" style={{ background: 'var(--bg-secondary)', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#fff', margin: '0 0 24px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <TrendingUp size={16} color="#22c55e" /> Performance Summary
                     </h3>

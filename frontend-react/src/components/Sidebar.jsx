@@ -2,49 +2,51 @@ import React, { useState } from 'react';
 import {
     LayoutDashboard, Mic, FileText, ClipboardList, Pill,
     FlaskConical, UserRound, Users, BarChart3, Bell,
-    Bot, Settings, LogOut, ChevronLeft, ChevronRight, Activity,
-    Menu, X, History, FileDown, MessageSquare, User
+    Bot, LogOut, ChevronLeft, ChevronRight, Activity,
+    Menu, X, History, FileDown, MessageSquare, User, Settings as SettingsIcon
 } from 'lucide-react';
-
-const doctorNav = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'new-consultation', label: 'New Consultation', icon: Mic, emoji: '🎙' },
-    { id: 'transcript', label: 'Transcript', icon: FileText, emoji: '📝' },
-    { id: 'soap-notes', label: 'SOAP Notes', icon: ClipboardList, emoji: '📄' },
-    { id: 'prescription', label: 'Prescription', icon: Pill, emoji: '💊' },
-    { id: 'drug-interactions', label: 'Drug Interactions', icon: FlaskConical, emoji: '🧪' },
-    { id: 'patient-records', label: 'Patient Records', icon: Users, emoji: '👥' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, emoji: '📊' },
-    { id: 'reminders', label: 'Reminders', icon: Bell, emoji: '⏰' },
-    { id: 'ai-assistant', label: 'AI Assistant', icon: Bot, emoji: '🤖' },
-    { id: 'settings', label: 'Settings', icon: Settings, emoji: '⚙️' },
-];
-
-const patientNav = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'consultation-history', label: 'Consultation History', icon: History, emoji: '📜' },
-    { id: 'prescriptions', label: 'Prescriptions', icon: Pill, emoji: '💊' },
-    { id: 'patient-summary', label: 'Patient Summary', icon: UserRound, emoji: '👨‍⚕️' },
-    { id: 'reports', label: 'Reports', icon: FileDown, emoji: '📄' },
-    { id: 'reminders', label: 'Reminders', icon: Bell, emoji: '⏰' },
-    { id: 'messages', label: 'Messages', icon: MessageSquare, emoji: '💬' },
-    { id: 'profile', label: 'Profile', icon: User, emoji: '👤' },
-];
+import { useConsultation } from '../context/ConsultationContext';
 
 export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole }) {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { t } = useConsultation();
+
+    const doctorNav = [
+        { id: 'dashboard', label: t('dashboard'), icon: LayoutDashboard },
+        { id: 'new-consultation', label: t('new_consultation'), icon: Mic },
+        { id: 'transcript', label: t('transcript'), icon: FileText },
+        { id: 'soap-notes', label: t('soap_notes'), icon: ClipboardList },
+        { id: 'prescription', label: t('prescription'), icon: Pill },
+        { id: 'drug-interactions', label: t('drug_interactions'), icon: FlaskConical },
+        { id: 'patient-records', label: t('patient_records'), icon: Users },
+        { id: 'analytics', label: t('analytics'), icon: BarChart3 },
+        { id: 'reminders', label: t('reminders'), icon: Bell },
+        { id: 'ai-assistant', label: t('ai_assistant'), icon: Bot },
+        { id: 'settings', label: t('settings'), icon: SettingsIcon },
+    ];
+
+    const patientNav = [
+        { id: 'dashboard', label: t('dashboard'), icon: LayoutDashboard },
+        { id: 'consultation-history', label: t('consultation_history'), icon: History },
+        { id: 'prescriptions', label: t('prescription'), icon: Pill },
+        { id: 'patient-summary', label: t('reports'), icon: UserRound },
+        { id: 'reports', label: t('reports'), icon: FileDown },
+        { id: 'reminders', label: t('reminders'), icon: Bell },
+        { id: 'messages', label: t('messages'), icon: MessageSquare },
+        { id: 'profile', label: t('profile'), icon: User },
+    ];
 
     const navItems = userRole === 'patient' ? patientNav : doctorNav;
 
     const handleNavClick = (id) => {
         setActiveTab(id);
-        setMobileOpen(false); // Close on mobile after selection
+        setMobileOpen(false);
     };
 
     return (
         <>
-            {/* Mobile Hamburger Button */}
+            {/* Mobile Hamburger */}
             <button
                 className="mobile-menu-btn"
                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -53,7 +55,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                     width: '44px', height: '44px', borderRadius: '12px', border: 'none',
                     background: 'linear-gradient(135deg, #0d9488, #06b6d4)',
                     color: '#fff', cursor: 'pointer',
-                    display: 'none', // shown via CSS media query
+                    display: 'none',
                     alignItems: 'center', justifyContent: 'center',
                     boxShadow: '0 4px 15px rgba(13,148,136,0.4)',
                     transition: 'all 0.2s',
@@ -69,7 +71,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                     onClick={() => setMobileOpen(false)}
                     style={{
                         position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-                        zIndex: 999, display: 'none', // shown via CSS
+                        zIndex: 999, display: 'none',
                     }}
                 />
             )}
@@ -80,8 +82,8 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                 style={{
                     width: collapsed ? '80px' : '260px',
                     minWidth: collapsed ? '80px' : '260px',
-                    background: 'linear-gradient(180deg, #0f1923 0%, #0a1628 50%, #0d1117 100%)',
-                    borderRight: '1px solid rgba(13, 148, 136, 0.15)',
+                    background: 'linear-gradient(180deg, #0a1628 0%, #060d19 50%, #040a14 100%)',
+                    borderRight: '1px solid rgba(13, 148, 136, 0.1)',
                     display: 'flex',
                     flexDirection: 'column',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -93,17 +95,17 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                 {/* Brand Header */}
                 <div style={{
                     padding: collapsed ? '20px 12px' : '24px 20px',
-                    borderBottom: '1px solid rgba(255,255,255,0.06)',
+                    borderBottom: '1px solid rgba(13, 148, 136, 0.08)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
                     justifyContent: collapsed ? 'center' : 'flex-start',
                 }}>
-                    <div style={{
+                    <div className="sidebar-brand-icon" style={{
                         width: '40px', height: '40px', borderRadius: '12px',
                         background: 'linear-gradient(135deg, #0d9488, #06b6d4)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 4px 15px rgba(13, 148, 136, 0.4)',
+                        boxShadow: '0 4px 15px rgba(13,148,136,0.4)',
                         flexShrink: 0,
                     }}>
                         <Activity size={22} color="#fff" />
@@ -116,27 +118,27 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                             }}>
                                 ClinNote <span style={{ color: '#0d9488' }}>AI</span>
                             </h1>
-                            <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', margin: 0, letterSpacing: '1px', textTransform: 'uppercase' }}>
+                            <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', margin: 0, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
                                 Medical Assistant
                             </p>
                         </div>
                     )}
                 </div>
 
-                {/* Collapse Toggle (hidden on mobile) */}
+                {/* Collapse Toggle */}
                 <button
                     className="collapse-toggle-btn"
                     onClick={() => setCollapsed(!collapsed)}
                     style={{
                         position: 'absolute', top: '28px', right: '-14px',
                         width: '28px', height: '28px', borderRadius: '50%',
-                        background: '#161b22', border: '1px solid rgba(13, 148, 136, 0.3)',
+                        background: '#0a1628', border: '1px solid rgba(13, 148, 136, 0.2)',
                         color: '#0d9488', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         zIndex: 10, transition: 'all 0.2s',
                     }}
                     onMouseEnter={(e) => { e.target.style.background = '#0d9488'; e.target.style.color = '#fff'; }}
-                    onMouseLeave={(e) => { e.target.style.background = '#161b22'; e.target.style.color = '#0d9488'; }}
+                    onMouseLeave={(e) => { e.target.style.background = '#0a1628'; e.target.style.color = '#0d9488'; }}
                 >
                     {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
                 </button>
@@ -148,12 +150,13 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                     scrollbarWidth: 'thin',
                     scrollbarColor: 'rgba(13,148,136,0.2) transparent',
                 }}>
-                    {navItems.map((item) => {
+                    {navItems.map((item, index) => {
                         const isActive = activeTab === item.id;
                         const Icon = item.icon;
                         return (
                             <button
                                 key={item.id}
+                                className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
                                 onClick={() => handleNavClick(item.id)}
                                 title={collapsed ? item.label : ''}
                                 style={{
@@ -166,27 +169,17 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                                     borderRadius: '10px',
                                     border: 'none',
                                     cursor: 'pointer',
-                                    transition: 'all 0.2s ease',
                                     justifyContent: collapsed ? 'center' : 'flex-start',
                                     background: isActive
-                                        ? 'linear-gradient(135deg, rgba(13,148,136,0.25), rgba(6,182,212,0.15))'
+                                        ? 'linear-gradient(135deg, rgba(13,148,136,0.2), rgba(6,182,212,0.1))'
                                         : 'transparent',
-                                    color: isActive ? '#5eead4' : 'rgba(255,255,255,0.5)',
-                                    boxShadow: isActive ? 'inset 0 0 0 1px rgba(13,148,136,0.3), 0 2px 8px rgba(13,148,136,0.1)' : 'none',
+                                    color: isActive ? '#5eead4' : 'rgba(255,255,255,0.45)',
+                                    boxShadow: isActive ? 'inset 0 0 0 1px rgba(13,148,136,0.2), 0 2px 8px rgba(13,148,136,0.08)' : 'none',
                                     position: 'relative',
                                     overflow: 'hidden',
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (!isActive) {
-                                        e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-                                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (!isActive) {
-                                        e.currentTarget.style.background = 'transparent';
-                                        e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
-                                    }
+                                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    animation: `staggerItem 0.4s ease ${0.03 * index}s both`,
+                                    opacity: 0,
                                 }}
                             >
                                 {isActive && (
@@ -194,12 +187,13 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                                         position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
                                         width: '3px', height: '60%', borderRadius: '0 4px 4px 0',
                                         background: 'linear-gradient(180deg, #0d9488, #06b6d4)',
+                                        boxShadow: '0 0 8px rgba(13,148,136,0.4)',
                                     }} />
                                 )}
-                                <Icon size={20} style={{ flexShrink: 0 }} />
+                                <Icon size={19} style={{ flexShrink: 0 }} />
                                 {!collapsed && (
                                     <span style={{
-                                        fontSize: '13.5px',
+                                        fontSize: '13px',
                                         fontWeight: isActive ? '600' : '400',
                                         whiteSpace: 'nowrap',
                                         letterSpacing: '-0.1px',
@@ -209,8 +203,11 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                                         {item.label}
                                     </span>
                                 )}
-                                {!collapsed && item.emoji && (
-                                    <span style={{ fontSize: '14px', opacity: 0.7 }}>{item.emoji}</span>
+                                {!collapsed && isActive && (
+                                    <span className="heartbeat-dot" style={{
+                                        flexShrink: 0,
+                                        width: '6px', height: '6px',
+                                    }} />
                                 )}
                             </button>
                         );
@@ -220,7 +217,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                 {/* Logout */}
                 <div style={{
                     padding: '16px 10px',
-                    borderTop: '1px solid rgba(255,255,255,0.06)',
+                    borderTop: '1px solid rgba(13, 148, 136, 0.08)',
                 }}>
                     <button
                         onClick={() => { onLogout(); setMobileOpen(false); }}
@@ -229,22 +226,22 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, userRole })
                             display: 'flex', alignItems: 'center', gap: '12px',
                             padding: collapsed ? '12px' : '11px 16px',
                             borderRadius: '10px', border: 'none', cursor: 'pointer',
-                            background: 'rgba(239, 68, 68, 0.08)',
-                            color: 'rgba(239, 68, 68, 0.7)',
-                            transition: 'all 0.2s',
+                            background: 'rgba(239, 68, 68, 0.06)',
+                            color: 'rgba(239, 68, 68, 0.6)',
+                            transition: 'all 0.25s',
                             justifyContent: collapsed ? 'center' : 'flex-start',
                         }}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.12)';
                             e.currentTarget.style.color = '#ef4444';
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
-                            e.currentTarget.style.color = 'rgba(239, 68, 68, 0.7)';
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.06)';
+                            e.currentTarget.style.color = 'rgba(239, 68, 68, 0.6)';
                         }}
                     >
-                        <LogOut size={20} />
-                        {!collapsed && <span style={{ fontSize: '13.5px', fontWeight: '500' }}>Logout</span>}
+                        <LogOut size={19} />
+                        {!collapsed && <span style={{ fontSize: '13px', fontWeight: '500' }}>{t('logout')}</span>}
                     </button>
                 </div>
             </div>

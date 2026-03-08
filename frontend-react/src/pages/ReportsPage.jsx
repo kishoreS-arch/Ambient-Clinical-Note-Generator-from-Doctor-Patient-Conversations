@@ -15,7 +15,7 @@ export default function ReportsPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
                 {dummyReports.map(report => (
-                    <div key={report.id} style={{
+                    <div key={report.id} className="med-card" style={{
                         background: 'var(--bg-secondary)',
                         padding: '20px',
                         borderRadius: '16px',

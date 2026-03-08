@@ -5,7 +5,7 @@ import { Settings as SettingsIcon, User, Building2, Globe, Moon, Sun, Volume2, V
 const languages = ['English', 'Tamil', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Bengali', 'Marathi'];
 
 export default function SettingsPage() {
-    const { settings, setSettings } = useConsultation();
+    const { settings, setSettings, t } = useConsultation();
     const [localSettings, setLocalSettings] = useState({ ...settings });
     const [saved, setSaved] = useState(false);
 
@@ -16,7 +16,14 @@ export default function SettingsPage() {
     };
 
     const handleChange = (key, value) => {
-        setLocalSettings(prev => ({ ...prev, [key]: value }));
+        const updated = { ...localSettings, [key]: value };
+        setLocalSettings(updated);
+
+        // Instant feedback for specific keys
+        if (key === 'darkMode' || key === 'language') {
+            setSettings(updated);
+        }
+
         setSaved(false);
     };
 
@@ -25,10 +32,10 @@ export default function SettingsPage() {
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
                 <div>
-                    <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#fff', margin: 0, letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <SettingsIcon size={28} color="#6b7280" /> Settings
+                    <h2 style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <SettingsIcon size={28} color="#6b7280" /> {t('settings')}
                     </h2>
-                    <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: '4px', fontSize: '14px' }}>
+                    <p style={{ color: 'var(--text-muted)', marginTop: '4px', fontSize: '14px' }}>
                         Manage your profile and preferences
                     </p>
                 </div>
@@ -40,18 +47,18 @@ export default function SettingsPage() {
                     fontSize: '13px', fontWeight: '600', transition: 'all 0.3s',
                     boxShadow: saved ? 'none' : '0 4px 15px rgba(13,148,136,0.3)',
                 }}>
-                    {saved ? <><CheckCircle size={16} /> Saved!</> : <><Save size={16} /> Save Changes</>}
+                    {saved ? <><CheckCircle size={16} /> {t('saved')}</> : <><Save size={16} /> {t('save_changes')}</>}
                 </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {/* Doctor Profile Section */}
                 <div style={{
-                    background: '#161b22', borderRadius: '16px', padding: '28px',
+                    background: 'var(--bg-secondary)', borderRadius: '16px', padding: '28px',
                     border: '1px solid rgba(255,255,255,0.06)',
                 }}>
-                    <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#fff', margin: '0 0 24px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <User size={18} color="#0d9488" /> Doctor Profile
+                    <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', margin: '0 0 24px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <User size={18} color="#0d9488" /> {t('doctor_profile')}
                     </h3>
 
                     <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', marginBottom: '24px' }}>
@@ -66,8 +73,8 @@ export default function SettingsPage() {
                             {localSettings.doctorName?.charAt(4) || 'D'}
                         </div>
                         <div style={{ flex: 1 }}>
-                            <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '8px' }}>
-                                Doctor Name
+                            <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '8px' }}>
+                                {t('doctor_name')}
                             </label>
                             <input
                                 type="text"
@@ -86,8 +93,8 @@ export default function SettingsPage() {
                     </div>
 
                     <div>
-                        <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                            <Building2 size={14} /> Hospital Name
+                        <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                            <Building2 size={14} /> {t('hospital_name')}
                         </label>
                         <input
                             type="text"
@@ -95,23 +102,23 @@ export default function SettingsPage() {
                             onChange={(e) => handleChange('hospitalName', e.target.value)}
                             style={{
                                 width: '100%', padding: '14px 16px', borderRadius: '12px',
-                                background: '#0d1117', border: '1px solid rgba(255,255,255,0.08)',
-                                color: '#fff', fontSize: '14px', outline: 'none', boxSizing: 'border-box',
+                                background: 'var(--bg-primary)', border: '1px solid var(--border-color)',
+                                color: 'var(--text-primary)', fontSize: '14px', outline: 'none', boxSizing: 'border-box',
                                 transition: 'border-color 0.2s',
                             }}
                             onFocus={(e) => e.target.style.borderColor = 'rgba(13,148,136,0.4)'}
-                            onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+                            onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
                         />
                     </div>
                 </div>
 
                 {/* Language */}
                 <div style={{
-                    background: '#161b22', borderRadius: '16px', padding: '28px',
+                    background: 'var(--bg-secondary)', borderRadius: '16px', padding: '28px',
                     border: '1px solid rgba(255,255,255,0.06)',
                 }}>
-                    <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#fff', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <Globe size={18} color="#3b82f6" /> Language
+                    <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Globe size={18} color="#3b82f6" /> {t('language_setting')}
                     </h3>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         {languages.map(lang => (
@@ -135,11 +142,11 @@ export default function SettingsPage() {
 
                 {/* Toggles */}
                 <div style={{
-                    background: '#161b22', borderRadius: '16px', padding: '28px',
+                    background: 'var(--bg-secondary)', borderRadius: '16px', padding: '28px',
                     border: '1px solid rgba(255,255,255,0.06)',
                 }}>
-                    <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#fff', margin: '0 0 20px 0' }}>
-                        Preferences
+                    <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', margin: '0 0 20px 0' }}>
+                        {t('preferences')}
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {/* Dark Mode Toggle */}
@@ -151,8 +158,8 @@ export default function SettingsPage() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 {localSettings.darkMode ? <Moon size={20} color="#a855f7" /> : <Sun size={20} color="#f59e0b" />}
                                 <div>
-                                    <p style={{ fontSize: '14px', fontWeight: '600', color: '#fff', margin: 0 }}>Dark Mode</p>
-                                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', margin: '2px 0 0 0' }}>Toggle between dark and light theme</p>
+                                    <p style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)', margin: 0 }}>{t('dark_mode')}</p>
+                                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '2px 0 0 0' }}>Toggle between dark and light theme</p>
                                 </div>
                             </div>
                             <button
@@ -182,8 +189,8 @@ export default function SettingsPage() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 {localSettings.aiVoice ? <Volume2 size={20} color="#0d9488" /> : <VolumeX size={20} color="#6b7280" />}
                                 <div>
-                                    <p style={{ fontSize: '14px', fontWeight: '600', color: '#fff', margin: 0 }}>AI Voice</p>
-                                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', margin: '2px 0 0 0' }}>Enable voice responses from AI assistant</p>
+                                    <p style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)', margin: 0 }}>{t('ai_voice')}</p>
+                                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '2px 0 0 0' }}>Enable voice responses from AI assistant</p>
                                 </div>
                             </div>
                             <button
@@ -208,7 +215,7 @@ export default function SettingsPage() {
 
                 {/* App Info */}
                 <div style={{
-                    background: '#161b22', borderRadius: '16px', padding: '24px',
+                    background: 'var(--bg-secondary)', borderRadius: '16px', padding: '24px',
                     border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center',
                 }}>
                     <p style={{ fontSize: '14px', fontWeight: '700', color: '#fff', margin: '0 0 4px 0' }}>

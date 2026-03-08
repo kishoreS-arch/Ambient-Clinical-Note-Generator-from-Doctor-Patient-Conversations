@@ -1,0 +1,682 @@
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  MediScribe AI — Medical Theme Animation System            ║
+   ║  DNA Helix · Heartbeat ECG · Floating Molecules · Glow     ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+/* ── Medical Color Palette ─────────────────────────────────── */
+:root {
+    /* Default Dark Theme (MediScribe Pro) */
+    --bg-primary: #060d19;
+    --bg-secondary: #0a1628;
+    --text-primary: #e6edf3;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.4);
+    --border-color: rgba(255, 255, 255, 0.06);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+    --med-navy: #060d19;
+    --med-deep: #0a1628;
+    --med-teal: #0d9488;
+    --med-cyan: #06b6d4;
+    --med-emerald: #10b981;
+    --med-pulse: #22d3ee;
+    --med-arterial: #ef4444;
+    --med-plasma: #8b5cf6;
+    --med-glow-teal: rgba(13, 148, 136, 0.35);
+    --med-glow-cyan: rgba(6, 182, 212, 0.3);
+    --dna-opacity: 0.6;
+    --ecg-opacity: 0.4;
+    --grid-opacity: 0.03;
+}
+
+/* ── Light Mode Overrides (Clinical High Contrast) ───────── */
+.light-mode {
+    --bg-primary: #ffffff;
+    --bg-secondary: #fdfdfd;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border-color: rgba(13, 148, 136, 0.18);
+    --card-shadow: 0 12px 30px rgba(15, 23, 42, 0.05), 0 0 1px rgba(15, 23, 42, 0.1);
+
+    --med-navy: #ffffff;
+    --med-deep: #f8fafc;
+    --med-glow-teal: rgba(13, 148, 136, 0.05);
+    --med-glow-cyan: rgba(6, 182, 212, 0.04);
+    --dna-opacity: 0.1;
+    --ecg-opacity: 0.05;
+    --grid-opacity: 0.02;
+}
+
+/* ── Page Entrance Animations ──────────────────────────────── */
+.page-enter {
+    animation: pageSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.99);
+        filter: blur(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* Staggered children animation */
+.stagger-fade>* {
+    opacity: 0;
+    animation: staggerItem 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stagger-fade>*:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.stagger-fade>*:nth-child(2) {
+    animation-delay: 0.10s;
+}
+
+.stagger-fade>*:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.stagger-fade>*:nth-child(4) {
+    animation-delay: 0.20s;
+}
+
+.stagger-fade>*:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.stagger-fade>*:nth-child(6) {
+    animation-delay: 0.30s;
+}
+
+.stagger-fade>*:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.stagger-fade>*:nth-child(8) {
+    animation-delay: 0.40s;
+}
+
+.stagger-fade>*:nth-child(9) {
+    animation-delay: 0.45s;
+}
+
+.stagger-fade>*:nth-child(10) {
+    animation-delay: 0.50s;
+}
+
+@keyframes staggerItem {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Medical Card Hover Glow ───────────────────────────────── */
+.med-card {
+    position: relative;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.35s ease;
+    will-change: transform, box-shadow;
+}
+
+.med-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg,
+            rgba(13, 148, 136, 0) 0%,
+            rgba(6, 182, 212, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.med-card:hover {
+    transform: translateY(-4px) scale(1.002);
+    box-shadow:
+        0 20px 40px rgba(15, 23, 42, 0.06),
+        0 0 0 1px rgba(13, 148, 136, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border-color: rgba(13, 148, 136, 0.4) !important;
+}
+
+.light-mode .med-card:hover {
+    box-shadow:
+        0 20px 40px rgba(15, 23, 42, 0.08),
+        0 0 0 1px rgba(13, 148, 136, 0.2);
+    background: #ffffff;
+}
+
+.med-card:hover::after {
+    opacity: 1;
+    background: linear-gradient(135deg,
+            rgba(13, 148, 136, 0.08) 0%,
+            rgba(6, 182, 212, 0.04) 100%);
+}
+
+/* ── DNA Helix Background ──────────────────────────────────── */
+.dna-helix-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.dna-strand {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--med-teal);
+    box-shadow: 0 0 8px var(--med-glow-teal);
+    opacity: var(--dna-opacity);
+}
+
+@keyframes dnaHelixLeft {
+    0% {
+        transform: translate(calc(-1 * var(--amp)), 0) scale(0.5);
+        opacity: 0.2;
+    }
+
+    25% {
+        transform: translate(0, calc(var(--travel) * 0.25)) scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translate(var(--amp), calc(var(--travel) * 0.5)) scale(0.5);
+        opacity: 0.3;
+    }
+
+    75% {
+        transform: translate(0, calc(var(--travel) * 0.75)) scale(1);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translate(calc(-1 * var(--amp)), var(--travel)) scale(0.5);
+        opacity: 0.2;
+    }
+}
+
+@keyframes dnaHelixRight {
+    0% {
+        transform: translate(var(--amp), 0) scale(0.5);
+        opacity: 0.3;
+    }
+
+    25% {
+        transform: translate(0, calc(var(--travel) * 0.25)) scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translate(calc(-1 * var(--amp)), calc(var(--travel) * 0.5)) scale(0.5);
+        opacity: 0.2;
+    }
+
+    75% {
+        transform: translate(0, calc(var(--travel) * 0.75)) scale(1);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translate(var(--amp), var(--travel)) scale(0.5);
+        opacity: 0.3;
+    }
+}
+
+/* ── Floating Medical Particles ────────────────────────────── */
+.med-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.med-particle {
+    position: absolute;
+    bottom: -40px;
+    opacity: 0;
+    animation: medFloat linear infinite;
+    filter: drop-shadow(0 0 6px var(--med-glow-cyan));
+}
+
+@keyframes medFloat {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+
+    8% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: translateY(-50vh) rotate(180deg) scale(1);
+    }
+
+    92% {
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateY(-110vh) rotate(360deg) scale(0.8);
+        opacity: 0;
+    }
+}
+
+/* ── ECG Heartbeat Trace ───────────────────────────────────── */
+.ecg-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 3;
+    opacity: var(--ecg-opacity);
+}
+
+.ecg-line svg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 200%;
+    height: 60px;
+    animation: ecgScroll 3s linear infinite;
+}
+
+.ecg-line svg path {
+    fill: none;
+    stroke: var(--med-teal);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 4px var(--med-glow-teal));
+}
+
+@keyframes ecgScroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* ── Medical Glow Button ───────────────────────────────────── */
+.med-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.med-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: width 0.6s ease, height 0.6s ease;
+    transform: translate(-50%, -50%);
+}
+
+.med-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.med-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 20px var(--med-glow-teal),
+        0 0 40px var(--med-glow-cyan);
+}
+
+/* ── Input Focus Pulse ─────────────────────────────────────── */
+.med-input {
+    transition: all 0.3s ease;
+}
+
+.med-input:focus {
+    outline: none;
+    border-color: var(--med-teal) !important;
+    box-shadow:
+        0 0 0 3px rgba(13, 148, 136, 0.15),
+        0 0 20px rgba(13, 148, 136, 0.1);
+    animation: inputPulse 2s ease-in-out infinite;
+}
+
+@keyframes inputPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 3px rgba(13, 148, 136, 0.15),
+            0 0 20px rgba(13, 148, 136, 0.1);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 5px rgba(13, 148, 136, 0.1),
+            0 0 30px rgba(13, 148, 136, 0.15);
+    }
+}
+
+/* ── Heartbeat Pulse Indicator ─────────────────────────────── */
+.heartbeat-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--med-teal);
+    animation: heartbeatPulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--med-glow-teal);
+}
+
+@keyframes heartbeatPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 var(--med-glow-teal);
+    }
+
+    15% {
+        transform: scale(1.3);
+    }
+
+    30% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(13, 148, 136, 0);
+    }
+
+    45% {
+        transform: scale(1.15);
+    }
+
+    60%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+    }
+}
+
+/* ── Vitals Monitor (Loading Screen) ───────────────────────── */
+.vitals-monitor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background: var(--med-navy);
+    position: relative;
+    overflow: hidden;
+}
+
+.vitals-monitor::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 30% 50%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+}
+
+.vitals-ecg-container {
+    position: relative;
+    width: 280px;
+    height: 100px;
+    margin-bottom: 32px;
+}
+
+.vitals-ecg-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+.vitals-ecg-container svg path {
+    fill: none;
+    stroke: var(--med-teal);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px var(--med-glow-teal));
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: ecgDraw 2s linear infinite;
+}
+
+@keyframes ecgDraw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.vitals-bpm {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--med-teal);
+    text-shadow: 0 0 20px var(--med-glow-teal);
+    animation: bpmPulse 1s ease-in-out infinite;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+}
+
+@keyframes bpmPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+.vitals-label {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+}
+
+.vitals-status {
+    font-size: 1.1rem;
+    color: var(--med-cyan);
+    letter-spacing: 1px;
+    animation: pulseOpacity 2s infinite;
+}
+
+@keyframes pulseOpacity {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ── Animated Border Gradient (Glass Card) ─────────────────── */
+.med-glass {
+    position: relative;
+    background: var(--bg-secondary);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-color);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.med-glass::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 30px;
+    padding: 2px;
+    background: conic-gradient(from var(--border-angle, 0deg),
+            transparent 60%,
+            var(--med-teal) 78%,
+            var(--med-cyan) 90%,
+            transparent 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderRotate 6s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes borderRotate {
+    to {
+        --border-angle: 360deg;
+    }
+}
+
+/* Chrome/Edge support for @property */
+@property --border-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+.med-glass>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Shine Sweep ───────────────────────────────────────────── */
+.med-glass::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(105deg,
+            transparent 40%,
+            rgba(255, 255, 255, 0.03) 50%,
+            transparent 60%);
+    animation: medShine 8s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes medShine {
+
+    0%,
+    100% {
+        left: -100%;
+    }
+
+    50% {
+        left: 200%;
+    }
+}
+
+/* ── Role Button 3D Effect ─────────────────────────────────── */
+.med-role-btn {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    perspective: 600px;
+}
+
+.med-role-btn:hover {
+    transform: translateY(-2px) rotateX(2deg);
+    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.2);
+}
+
+.med-role-btn.active {
+    background: rgba(13, 148, 136, 0.12) !important;
+    border-color: var(--med-teal) !important;
+    box-shadow:
+        0 0 24px rgba(13, 148, 136, 0.2),
+        inset 0 0 20px rgba(13, 148, 136, 0.06);
+}
+
+/* ── Sidebar Nav Item Pulse ────────────────────────────────── */
+.sidebar-nav-item {
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-nav-item:hover {
+    background: rgba(13, 148, 136, 0.06) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.sidebar-nav-item.active {
+    background: linear-gradient(135deg,
+            rgba(13, 148, 136, 0.2),
+            rgba(6, 182, 212, 0.1)) !important;
+    color: #5eead4 !important;
+}
+
+.sidebar-nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, var(--med-teal), var(--med-cyan));
+    box-shadow: 0 0 8px var(--med-glow-teal);
+}
+
+/* ── Sidebar Brand Pulse ───────────────────────────────────── */
+.sidebar-brand-icon {
+    animation: brandPulse 3s ease-in-out infinite;
+}
+
+@keyframes brandPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 15px rgba(13, 148, 136, 0.4);
+    }
+
+    50% {
+        box-shadow:
+            0 4px 20px rgba(13, 148, 136, 0.6),
+            0 0 30px rgba(6, 182, 212, 0.3);
+    }
+}
+
+/* ── Medical Grid Background ───────────────────────────────── */
+.med-grid-bg {
+    background-image:
+        linear-gradient(rgba(13, 148, 136, var(--grid-opacity)) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(13, 148, 136, var(--grid-opacity)) 1px, transparent 1px);
+    background-size: 40px 40px;
+}

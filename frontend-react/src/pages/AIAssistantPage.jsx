@@ -1,77 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useConsultation } from '../context/ConsultationContext';
-import { Bot, Mic, Send, MicOff, ClipboardList, Pill, Users, FileText, Zap, Volume2 } from 'lucide-react';
-
-const quickCommands = [
-    { label: 'Generate SOAP Note', icon: ClipboardList, command: 'Generate SOAP note for the current consultation', color: '#0d9488' },
-    { label: 'Create Prescription', icon: Pill, command: 'Create a prescription for the current patient', color: '#a855f7' },
-    { label: 'Show Patient History', icon: Users, command: 'Show the patient history for the current consultation', color: '#3b82f6' },
-    { label: 'Summarize for Patient', icon: FileText, command: 'Create a patient-friendly summary of the diagnosis', color: '#f59e0b' },
-];
-
-const aiResponses = {
-    'soap': `**SOAP Note Generated** ✅
-
-**Subjective:** Patient reports persistent headache for 3 days, rated 6/10, worse in the morning. Associated with mild nausea. No history of head trauma.
-
-**Objective:** BP 130/85 mmHg, HR 78 bpm, Temp 98.4°F. Neurological exam within normal limits. No papilledema.
-
-**Assessment:** Tension-type headache (ICD: 8A81). Rule out secondary causes if persistent.
-
-**Plan:** Paracetamol 500mg PRN, stress management counseling, follow-up in 1 week if no improvement. Consider CT head if symptoms worsen.`,
-
-    'prescription': `**Prescription Generated** 💊
-
-1. **Paracetamol 500mg** — Twice daily after food — 5 days
-2. **Cetirizine 10mg** — Once daily at bedtime — 3 days
-3. **Pantoprazole 40mg** — Once daily before breakfast — 7 days
-
-⚠️ Drug interaction check: No significant interactions found.
-📋 Ready to print.`,
-
-    'history': `**Patient History Retrieved** 📋
-
-**Patient:** Current consultation record
-**Total Visits:** 3 recorded visits
-
-| Date | Diagnosis | Medications |
-|------|-----------|------------|
-| Mar 7, 2026 | Tension Headache | Paracetamol 500mg |
-| Feb 20, 2026 | URTI | Cetirizine, Paracetamol |
-| Jan 15, 2026 | Routine Checkup | None |
-
-🔍 No chronic conditions flagged.`,
-
-    'summary': `**Patient Summary** 👨‍⚕️
-
-*In simple words for the patient:*
-
-"You have a common tension headache, likely caused by stress or poor sleep. It's not serious, but we want to make sure it goes away. I'm giving you a pain reliever to take twice a day with food. If the headache doesn't get better in a week, please come back so we can run some more tests."
-
-✅ Reading Level: Grade 5.2 (PASS)`,
-
-    'default': `I can help you with clinical tasks! Try these commands:
-• "Generate SOAP note"
-• "Create prescription"
-• "Show patient history"
-• "Summarize for patient"
-
-Or ask me anything about the current consultation.`,
-};
-
-function getAIResponse(input) {
-    const lower = input.toLowerCase();
-    if (lower.includes('soap') || lower.includes('note')) return aiResponses.soap;
-    if (lower.includes('prescription') || lower.includes('medicine') || lower.includes('drug')) return aiResponses.prescription;
-    if (lower.includes('history') || lower.includes('patient') || lower.includes('record')) return aiResponses.history;
-    if (lower.includes('summary') || lower.includes('explain') || lower.includes('simple')) return aiResponses.summary;
-    return aiResponses.default;
-}
+import { Bot, Mic, Send, MicOff, ClipboardList, Pill, Users, FileText, Zap, Volume2, AlertTriangle, Activity, Brain, Clock } from 'lucide-react';
 
 export default function AIAssistantPage({ setActiveTab }) {
-    const { consultData } = useConsultation();
+    const { consultData, aiInsights, t } = useConsultation();
     const [messages, setMessages] = useState([
-        { role: 'assistant', content: '👋 Hello Doctor! I\'m your AI clinical assistant. I can help you generate SOAP notes, create prescriptions, retrieve patient history, and more. How can I assist you today?', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
+        { role: 'assistant', content: '👋 Hello Doctor! I\'m analyzing the current consultation. I\'ve found some clinical insights and risk factors you might want to review.', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
     ]);
     const [input, setInput] = useState('');
     const [isListening, setIsListening] = useState(false);
@@ -110,14 +44,13 @@ export default function AIAssistantPage({ setActiveTab }) {
         setIsTyping(true);
 
         setTimeout(() => {
-            const response = getAIResponse(msg);
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: response,
+                content: `Based on your query "${msg}", I recommend focusing on the identified respiratory risk factors. I've listed some clinical suggestions in the Intelligence panel.`,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             }]);
             setIsTyping(false);
-        }, 1200);
+        }, 1000);
     };
 
     const toggleVoice = () => {
@@ -134,151 +67,134 @@ export default function AIAssistantPage({ setActiveTab }) {
         }
     };
 
-    const handleSpeak = (text) => {
-        const clean = text.replace(/[*#|_`]/g, '').replace(/\n/g, '. ');
-        const utterance = new SpeechSynthesisUtterance(clean);
-        utterance.rate = 0.9;
-        window.speechSynthesis.speak(utterance);
-    };
-
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto', height: 'calc(100vh - 64px)', display: 'flex', flexDirection: 'column' }}>
-            {/* Header */}
-            <div style={{ marginBottom: '20px', flexShrink: 0 }}>
-                <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#fff', margin: 0, letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Bot size={28} color="#06b6d4" /> AI Assistant
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: '4px', fontSize: '14px' }}>
-                    Voice-powered clinical assistant for doctors
-                </p>
-            </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', height: 'calc(100vh - 100px)' }}>
+            {/* Left: Chat & Action Hub */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(6, 182, 212, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Bot size={24} color="#06b6d4" />
+                    </div>
+                    <div>
+                        <h2 style={{ fontSize: '24px', fontWeight: '800', margin: 0 }}>Clinical AI Intel</h2>
+                        <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>Real-time diagnostic support & automation</p>
+                    </div>
+                </div>
 
-            {/* Quick Commands */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '16px', flexShrink: 0 }}>
-                {quickCommands.map((cmd, i) => {
-                    const Icon = cmd.icon;
-                    return (
-                        <button key={i} onClick={() => handleSend(cmd.command)} style={{
-                            display: 'flex', alignItems: 'center', gap: '10px',
-                            padding: '12px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                            background: '#161b22', color: 'rgba(255,255,255,0.7)',
-                            fontSize: '12px', fontWeight: '600', textAlign: 'left',
-                            transition: 'all 0.2s',
-                            boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)',
-                        }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = `${cmd.color}15`; e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${cmd.color}40`; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = '#161b22'; e.currentTarget.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.06)'; }}
-                        >
-                            <Icon size={16} color={cmd.color} />
-                            <span>{cmd.label}</span>
-                        </button>
-                    );
-                })}
-            </div>
-
-            {/* Chat Messages */}
-            <div style={{
-                flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '14px',
-                padding: '20px', borderRadius: '16px',
-                background: '#161b22', border: '1px solid rgba(255,255,255,0.06)',
-                marginBottom: '16px',
-            }}>
-                {messages.map((msg, i) => (
-                    <div key={i} style={{
-                        alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                        maxWidth: '80%',
-                    }}>
-                        <div style={{
-                            padding: '14px 18px', borderRadius: '16px',
-                            background: msg.role === 'user'
-                                ? 'linear-gradient(135deg, rgba(13,148,136,0.25), rgba(6,182,212,0.15))'
-                                : 'rgba(255,255,255,0.03)',
-                            border: msg.role === 'user'
-                                ? '1px solid rgba(13,148,136,0.3)'
-                                : '1px solid rgba(255,255,255,0.06)',
-                            borderBottomRightRadius: msg.role === 'user' ? '4px' : '16px',
-                            borderBottomLeftRadius: msg.role === 'assistant' ? '4px' : '16px',
-                        }}>
-                            <p style={{
-                                fontSize: '13.5px', color: '#e6edf3', margin: 0, lineHeight: '1.7',
-                                whiteSpace: 'pre-wrap',
-                            }}>
-                                {msg.content}
-                            </p>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
-                            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.2)' }}>{msg.time}</span>
-                            {msg.role === 'assistant' && (
-                                <button onClick={() => handleSpeak(msg.content)} style={{
-                                    background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.2)',
-                                    padding: '2px', display: 'flex',
+                {/* Chat Area */}
+                <div className="med-glass" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', gap: '15px' }}>
+                    <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        {messages.map((msg, i) => (
+                            <div key={i} style={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
+                                <div style={{
+                                    padding: '12px 16px',
+                                    borderRadius: '16px',
+                                    background: msg.role === 'user' ? 'rgba(13, 148, 136, 0.1)' : 'var(--bg-primary)',
+                                    border: '1px solid var(--border-color)',
+                                    borderBottomLeftRadius: msg.role === 'assistant' ? '4px' : '16px',
+                                    borderBottomRightRadius: msg.role === 'user' ? '4px' : '16px',
                                 }}>
-                                    <Volume2 size={12} />
-                                </button>
-                            )}
-                        </div>
+                                    <p style={{ margin: 0, fontSize: '13.5px', lineHeight: '1.6' }}>{msg.content}</p>
+                                </div>
+                                <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>{msg.time}</span>
+                            </div>
+                        ))}
+                        {isTyping && <div className="typing-dot" style={{ opacity: 0.5, fontSize: '12px' }}>AI is analyzing...</div>}
+                        <div ref={messagesEndRef} />
                     </div>
-                ))}
 
-                {isTyping && (
-                    <div style={{ alignSelf: 'flex-start', padding: '14px 18px', borderRadius: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <div style={{ display: 'flex', gap: '4px' }}>
-                            {[0, 1, 2].map(i => (
-                                <div key={i} style={{
-                                    width: '8px', height: '8px', borderRadius: '50%', background: '#0d9488',
-                                    animation: `pulse 1.4s ${i * 0.2}s infinite`,
-                                    opacity: 0.4,
-                                }} />
-                            ))}
-                        </div>
+                    <div style={{ position: 'relative', display: 'flex', gap: '10px' }}>
+                        <button onClick={toggleVoice} style={{
+                            width: '44px', height: '44px', borderRadius: '12px', border: 'none',
+                            background: isListening ? 'rgba(239, 68, 68, 0.1)' : 'rgba(13, 148, 136, 0.1)',
+                            color: isListening ? '#ef4444' : '#0d9488', cursor: 'pointer'
+                        }}>
+                            {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                        </button>
+                        <input
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                            placeholder="Ask or command..."
+                            style={{ flex: 1, padding: '0 20px', borderRadius: '12px', border: '1px solid var(--border-color)', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+                        />
+                        <button onClick={() => handleSend()} style={{
+                            padding: '0 20px', borderRadius: '12px', border: 'none', background: '#0d9488', color: '#fff', cursor: 'pointer'
+                        }}>Send</button>
                     </div>
-                )}
-                <div ref={messagesEndRef} />
+                </div>
+
+                {/* Question Suggestion Grid */}
+                <div>
+                    <h3 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Zap size={16} color="#f59e0b" /> Suggested Diagnostic Questions
+                    </h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        {aiInsights.suggestedQuestions.map((q, i) => (
+                            <button key={i} onClick={() => handleSend(q)} className="med-card" style={{
+                                padding: '12px 15px', borderRadius: '12px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+                                textAlign: 'left', cursor: 'pointer', fontSize: '12px', fontWeight: '500', color: 'var(--text-primary)'
+                            }}>
+                                {q}
+                            </button>
+                        ))}
+                    </div>
+                </div>
             </div>
 
-            {/* Input Area */}
-            <div style={{
-                display: 'flex', gap: '10px', alignItems: 'center', flexShrink: 0,
-                padding: '14px 16px', borderRadius: '14px',
-                background: '#161b22', border: '1px solid rgba(255,255,255,0.08)',
-            }}>
-                <button onClick={toggleVoice} style={{
-                    width: '42px', height: '42px', borderRadius: '50%', border: 'none', cursor: 'pointer',
-                    background: isListening ? 'rgba(239,68,68,0.2)' : 'rgba(13,148,136,0.15)',
-                    color: isListening ? '#ef4444' : '#0d9488',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'all 0.2s', flexShrink: 0,
-                    animation: isListening ? 'pulse 1.5s infinite' : 'none',
-                }}>
-                    {isListening ? <MicOff size={18} /> : <Mic size={18} />}
-                </button>
-                <input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder={isListening ? 'Listening...' : 'Type a command or ask a question...'}
-                    style={{
-                        flex: 1, padding: '12px 0', background: 'transparent', border: 'none',
-                        color: '#fff', fontSize: '14px', outline: 'none',
-                    }}
-                />
-                <button onClick={() => handleSend()} disabled={!input.trim()} style={{
-                    width: '42px', height: '42px', borderRadius: '50%', border: 'none', cursor: input.trim() ? 'pointer' : 'default',
-                    background: input.trim() ? 'linear-gradient(135deg, #0d9488, #06b6d4)' : 'rgba(255,255,255,0.05)',
-                    color: input.trim() ? '#fff' : 'rgba(255,255,255,0.2)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'all 0.2s', flexShrink: 0,
-                }}>
-                    <Send size={18} />
-                </button>
-            </div>
+            {/* Right: AI Clinical Insights Side-Panel */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {/* Risk Predictor */}
+                <div className="med-glass" style={{ padding: '18px' }}>
+                    <h3 style={{ fontSize: '13px', fontWeight: '700', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px', color: '#0d9488' }}>
+                        <Activity size={16} /> Disease Risk Predictor
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {aiInsights.riskPrediction.map((risk, i) => (
+                            <div key={i}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '11px' }}>
+                                    <span>{risk.disease}</span>
+                                    <span style={{ color: risk.risk === 'High' ? '#ef4444' : risk.risk === 'Medium' ? '#f59e0b' : '#10b981', fontWeight: '700' }}>{risk.risk} Risk</span>
+                                </div>
+                                <div style={{ height: '6px', width: '100%', background: 'rgba(0,0,0,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                                    <div style={{
+                                        height: '100%',
+                                        width: risk.risk === 'High' ? '85%' : risk.risk === 'Medium' ? '50%' : '20%',
+                                        background: risk.risk === 'High' ? '#ef4444' : risk.risk === 'Medium' ? '#f59e0b' : '#10b981'
+                                    }} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
-            <style>{`
-                @keyframes pulse {
-                    0%, 100% { opacity: 0.4; transform: scale(1); }
-                    50% { opacity: 1; transform: scale(1.1); }
-                }
-            `}</style>
+                {/* Missed Symptom Detector */}
+                <div className="med-glass" style={{ padding: '18px', borderLeft: '4px solid #ef4444' }}>
+                    <h3 style={{ fontSize: '13px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444' }}>
+                        <AlertTriangle size={16} /> Possible Missed Symptoms
+                    </h3>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {aiInsights.missedSymptoms.map((s, i) => (
+                            <div key={i} style={{ padding: '4px 10px', borderRadius: '6px', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', fontSize: '11px', fontWeight: '600', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                                • {s}
+                            </div>
+                        ))}
+                        {aiInsights.missedSymptoms.length === 0 && <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>No missing symptoms detected.</p>}
+                    </div>
+                </div>
+
+                {/* Conversation Summary Insights */}
+                <div className="med-glass" style={{ padding: '18px' }}>
+                    <h3 style={{ fontSize: '13px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Brain size={16} color="#8b5cf6" /> Clinical Intelligence
+                    </h3>
+                    <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <li style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Patient mentioned dizziness</li>
+                        <li style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Patient reported fatigue</li>
+                        <li style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Possible symptom cluster detected</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 }

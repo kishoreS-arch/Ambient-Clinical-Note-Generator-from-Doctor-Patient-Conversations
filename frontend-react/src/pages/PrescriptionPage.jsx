@@ -71,8 +71,8 @@ export default function PrescriptionPage() {
 
       {/* Active Prescriptions */}
       {prescriptions.length > 0 ? (
-        <div style={{
-          background: '#161b22', borderRadius: '20px',
+        <div className="med-card" style={{
+          background: 'var(--bg-secondary)', borderRadius: '20px',
           border: '1px solid rgba(255,255,255,0.06)', padding: '24px', marginBottom: '20px',
         }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#fff', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -106,8 +106,8 @@ export default function PrescriptionPage() {
           </div>
         </div>
       ) : (
-        <div style={{
-          background: '#161b22', borderRadius: '20px', padding: '60px',
+        <div className="med-card" style={{
+          background: 'var(--bg-secondary)', borderRadius: '20px', padding: '60px',
           border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', marginBottom: '20px',
         }}>
           <Pill size={48} color="rgba(255,255,255,0.15)" style={{ marginBottom: '16px' }} />
@@ -148,8 +148,8 @@ export default function PrescriptionPage() {
       )}
 
       {/* Dosage Templates */}
-      <div style={{
-        background: '#161b22', borderRadius: '20px',
+      <div className="med-card" style={{
+        background: 'var(--bg-secondary)', borderRadius: '20px',
         border: '1px solid rgba(255,255,255,0.06)', padding: '24px',
       }}>
         <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#fff', margin: '0 0 20px 0' }}>
