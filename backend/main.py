@@ -13,7 +13,9 @@ from drug_checker import check_drug_interactions
 from db_service import save_consultation, get_all_consultations, approve_consultation
 from analytics import generate_analytics
 
-app = FastAPI(title="ClinNote AI Backend")
+# Use /api as root path for Vercel deployment
+root_path = "/api" if os.getenv("VERCEL") else ""
+app = FastAPI(title="ClinNote AI Backend", root_path=root_path)
 
 app.add_middleware(
     CORSMiddleware,
