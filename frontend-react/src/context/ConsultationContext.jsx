@@ -92,14 +92,14 @@ export function ConsultationProvider({ children }) {
 
     const fetchAnalytics = async () => {
         try {
-            const res = await fetch('http://localhost:8000/analytics');
+            const res = await fetch('/api/analytics');
             if (res.ok) setAnalyticsData(await res.json());
         } catch (e) { console.error("Could not fetch analytics", e); }
     };
 
     const fetchHistory = async () => {
         try {
-            const res = await fetch('http://localhost:8000/consultations');
+            const res = await fetch('/api/consultations');
             if (res.ok) setHistoryData(await res.json());
         } catch (e) { console.error("Could not fetch history", e); }
     };
@@ -153,7 +153,7 @@ export function ConsultationProvider({ children }) {
             const formData = new FormData();
             formData.append('file', audioBlob, 'consultation.wav');
 
-            const response = await fetch('http://localhost:8000/process_audio', {
+            const response = await fetch('/api/process_audio', {
                 method: 'POST',
                 body: formData,
             });
@@ -244,7 +244,7 @@ export function ConsultationProvider({ children }) {
     const handleApprove = async () => {
         if (!consultData) return;
         try {
-            const res = await fetch(`http://localhost:8000/approve_consultation/${consultData.id}`, { method: 'POST' });
+            const res = await fetch(`/api/approve_consultation/${consultData.id}`, { method: 'POST' });
             if (res.ok) {
                 setIsApproved(true);
                 fetchHistory();

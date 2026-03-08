@@ -27,7 +27,10 @@ os.makedirs("temp", exist_ok=True)
 
 @app.post("/process_audio")
 async def process_audio(file: UploadFile = File(...)):
-    path = f"temp/{file.filename}"
+    # Use /tmp on Vercel, or local temp otherwise
+    temp_dir = "/tmp" if os.path.exists("/tmp") else "temp"
+    os.makedirs(temp_dir, exist_ok=True)
+    path = os.path.join(temp_dir, file.filename)
     try:
         with open(path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
