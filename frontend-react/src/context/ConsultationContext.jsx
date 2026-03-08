@@ -14,9 +14,9 @@ export function ConsultationProvider({ children }) {
     const [analyticsData, setAnalyticsData] = useState(null);
     const [historyData, setHistoryData] = useState([]);
     const [reminders, setReminders] = useState([
-        { id: 1, patient: 'Raj Kumar', task: 'ECG test', dueDate: '2026-03-12', status: 'pending' },
-        { id: 2, patient: 'Priya Sharma', task: 'Blood pressure follow-up', dueDate: '2026-03-15', status: 'pending' },
-        { id: 3, patient: 'Arun Patel', task: 'Lab results review', dueDate: '2026-03-10', status: 'completed' },
+        { id: 1, patient: 'Raj Kumar', task: 'ECG test', dueDate: '2026-03-12', status: 'pending', phone: '+919876543210' },
+        { id: 2, patient: 'Priya Sharma', task: 'Blood pressure follow-up', dueDate: '2026-03-15', status: 'pending', phone: '+918765432109' },
+        { id: 3, patient: 'Arun Patel', task: 'Lab results review', dueDate: '2026-03-10', status: 'completed', phone: '+917654321098' },
     ]);
     const [settings, setSettings] = useState(() => {
         const saved = localStorage.getItem('clin-note-settings');

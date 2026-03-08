@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
 import { useConsultation } from '../context/ConsultationContext';
-import { Bell, Plus, CheckCircle, Clock, Trash2, AlertCircle, X } from 'lucide-react';
+import { Bell, Plus, CheckCircle, Clock, Trash2, AlertCircle, X, MessageCircle } from 'lucide-react';
 
 export default function RemindersPage() {
     const { reminders, addReminder, toggleReminderStatus, deleteReminder } = useConsultation();
     const [showAddForm, setShowAddForm] = useState(false);
-    const [newReminder, setNewReminder] = useState({ patient: '', task: '', dueDate: '' });
+    const [newReminder, setNewReminder] = useState({ patient: '', task: '', dueDate: '', phone: '' });
     const [filter, setFilter] = useState('all');
 
     const handleAdd = () => {
         if (!newReminder.patient || !newReminder.task || !newReminder.dueDate) return;
         addReminder(newReminder);
-        setNewReminder({ patient: '', task: '', dueDate: '' });
+        setNewReminder({ patient: '', task: '', dueDate: '', phone: '' });
         setShowAddForm(false);
+    };
+
+    const handleWhatsApp = (reminder) => {
+        const phone = reminder.phone ? reminder.phone.replace(/\D/g, '') : '';
+        if (!phone) {
+            alert("No phone number available for this patient.");
+            return;
+        }
+        const message = `Hello ${reminder.patient}, this is a reminder from MediScribe AI regarding your ${reminder.task} due on ${reminder.dueDate}.`;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
     };
 
     const filtered = filter === 'all' ? reminders
@@ -109,6 +120,7 @@ export default function RemindersPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '16px' }}>
                         {[
                             { placeholder: 'Patient Name', key: 'patient', type: 'text' },
+                            { placeholder: 'Patient Phone', key: 'phone', type: 'tel' },
                             { placeholder: 'Task (e.g., ECG test)', key: 'task', type: 'text' },
                             { placeholder: 'Due Date', key: 'dueDate', type: 'date' },
                         ].map(field => (
@@ -179,19 +191,35 @@ export default function RemindersPage() {
                                         </p>
                                     )}
                                 </div>
-                                <button
-                                    onClick={() => deleteReminder(reminder.id)}
-                                    style={{
-                                        width: '32px', height: '32px', borderRadius: '8px', border: 'none',
-                                        background: 'rgba(239,68,68,0.08)', color: 'rgba(239,68,68,0.5)',
-                                        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        transition: 'all 0.2s',
-                                    }}
-                                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.color = '#ef4444'; }}
-                                    onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; e.currentTarget.style.color = 'rgba(239,68,68,0.5)'; }}
-                                >
-                                    <Trash2 size={14} />
-                                </button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button
+                                        onClick={() => handleWhatsApp(reminder)}
+                                        style={{
+                                            width: '32px', height: '32px', borderRadius: '8px', border: 'none',
+                                            background: 'rgba(34,197,94,0.08)', color: 'rgba(34,197,94,0.5)',
+                                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            transition: 'all 0.2s',
+                                        }}
+                                        title="Send WhatsApp Reminder"
+                                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34,197,94,0.15)'; e.currentTarget.style.color = '#22c55e'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(34,197,94,0.08)'; e.currentTarget.style.color = 'rgba(34,197,94,0.5)'; }}
+                                    >
+                                        <MessageCircle size={14} />
+                                    </button>
+                                    <button
+                                        onClick={() => deleteReminder(reminder.id)}
+                                        style={{
+                                            width: '32px', height: '32px', borderRadius: '8px', border: 'none',
+                                            background: 'rgba(239,68,68,0.08)', color: 'rgba(239,68,68,0.5)',
+                                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            transition: 'all 0.2s',
+                                        }}
+                                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.color = '#ef4444'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; e.currentTarget.style.color = 'rgba(239,68,68,0.5)'; }}
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     );
